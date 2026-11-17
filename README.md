@@ -17,6 +17,41 @@ Windows 全体の環境変数は変更せず、管理者権限も要求しませ
 3. `Run-ArduinoPathFix.cmd` をダブルクリックします。
 4. `SUCCESS` と表示されたら Arduino IDE を起動し、Blink などをコンパイルします。
 
+## 手動で行う場合
+
+スクリプトを使わずに設定する場合は、Arduino IDE を終了した状態で、次の手順を行います。
+
+1. Arduino IDE のウィンドウをすべて閉じます。タスク マネージャーで `Arduino IDE` または
+   `arduino-cli` が残っていないことも確認します。
+2. エクスプローラーで `C:\ArduinoWork`、`C:\ArduinoWork\data`、
+   `C:\ArduinoWork\cache` を作成します。
+3. `%LOCALAPPDATA%\Arduino15` の中身を `C:\ArduinoWork\data` にコピーします。
+   コピー元の `Arduino15` フォルダ自体ではなく、その中身をコピーしてください。
+   コピー後も元のフォルダとファイルは削除しません。
+
+   コマンド プロンプトを使う場合は、次のコマンドでもコピーできます。
+
+   ```bat
+   robocopy "%LOCALAPPDATA%\Arduino15" "C:\ArduinoWork\data" /E /COPY:DAT /DCOPY:DAT /XJ
+   ```
+
+4. `%USERPROFILE%\.arduinoIDE\arduino-cli.yaml` を別名でバックアップします。
+   例: `arduino-cli.yaml.backup-20261117`
+5. `arduino-cli.yaml` をテキストエディターで開き、次の設定を追加または変更します。
+   YAML のインデントにはスペースを使用してください。
+
+   ```yaml
+   build_cache:
+     path: C:\ArduinoWork\cache
+   directories:
+     data: C:\ArduinoWork\data
+   ```
+
+   既に `directories.data` が別のフォルダを指している場合は、既存データの扱いを
+   確認してから変更してください。`directories.user` は変更しません。
+6. ファイルを保存し、Arduino IDE を起動します。Blink などをコンパイルして、
+   コンパイルログに `C:\ArduinoWork` 配下のパスが表示されることを確認します。
+
 ## 注意
 - Arduino IDE 2.x（目安として 2.3.4 以降）を対象とします。
 - `C:\ArduinoWork` に作成・書き込みできる権限が必要です。
